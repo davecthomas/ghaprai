@@ -1,0 +1,16 @@
+name: List Files in PR
+
+on:
+  pull_request:
+    types: [review_requested]
+
+jobs:
+  list-files:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: List files in the PR
+        uses: ./.github/actions/ghaprai # Adjust this path based on where your action is located
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
