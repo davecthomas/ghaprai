@@ -35,9 +35,12 @@ export default async function run(): Promise<void> {
       });
 
       console.log(`Files changed in PR #${prNumber}:`);
-      files.forEach((file) => {
-        console.log(file.filename);
-      });
+      // Convert the list of files to a string
+      const fileList = files.map((file) => file.filename).join('\n');
+      console.log(`Files changed in PR #${prNumber}: ${fileList}`);
+
+      // Set the output for the workflow by assigning the list of files to the 'prFiles' output
+      core.setOutput('prFiles', fileList);
     } else {
       // Use 'core.setFailed' to log an error if the action was not triggered by a pull request
       core.setFailed('Action was not triggered by a pull request');
