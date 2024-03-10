@@ -20,6 +20,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Display PR Files
         run: echo 'Files changed in the PR:' ${{ steps.log_pr_details.outputs.files }}
-branding:
-  icon: 'eye'
-  color: 'silver'
