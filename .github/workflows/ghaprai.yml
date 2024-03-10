@@ -19,4 +19,4 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Display PR Files
-        run: echo 'Files changed in the PR:' ${{ steps.log_pr_details.outputs.files }}
+        run: echo 'Files changed in the PR:' ${{ steps.log_pr_details.outputs.filesList }}
