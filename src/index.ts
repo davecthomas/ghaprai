@@ -11,34 +11,37 @@ export async function run(): Promise<void> {
     const repoOwner: string = context.repo.owner;
     const repoName: string = context.repo.repo;
 
-    if (eventName === 'pull_request') {
-      const prNumber = context.payload.pull_request!.number;
+    if (eventName === 'pull_request' || eventName === 'push') {
+      let fileList: string = 'No files changed.';
 
-      const { data: files } = await octokit.rest.pulls.listFiles({
-        owner: repoOwner,
-        repo: repoName,
-        pull_number: prNumber,
-      });
+      if (eventName === 'pull_request') {
+        const prNumber = context.payload.pull_request!.number;
 
-      const fileList: string = files.map((file) => file.filename).join('\n') || 'No files changed.';
-      console.log(`Files changed in PR #${prNumber}: ${fileList}`);
-      core.setOutput('prFiles', fileList); // Unused output
-      core.setOutput('log_pr_details', fileList);
-    } else if (eventName === 'push') {
-      const ref: string = context.payload.after!;
-      const compare: string = context.payload.before!;
+        const { data: files } = await octokit.rest.pulls.listFiles({
+          owner: repoOwner,
+          repo: repoName,
+          pull_number: prNumber,
+        });
 
-      const { data: commitDiff } = await octokit.rest.repos.compareCommits({
-        owner: repoOwner,
-        repo: repoName,
-        base: compare,
-        head: ref,
-      });
+        fileList = files.map((file) => file.filename).join('\n');
+        // console.log(`Files changed in PR #${prNumber}: ${fileList}`);
+      } else {
+        const ref: string = context.payload.after!;
+        const compare: string = context.payload.before!;
 
-      const fileList: string = commitDiff.files?.map((file) => file.filename).join('\n') || 'No files changed.';
-      console.log(`Files changed in push: ${fileList}`);
-      core.setOutput('pushFiles', fileList); // Unused output
-      core.setOutput('log_pr_details', fileList);
+        const { data: commitDiff } = await octokit.rest.repos.compareCommits({
+          owner: repoOwner,
+          repo: repoName,
+          base: compare,
+          head: ref,
+        });
+
+        fileList = commitDiff.files?.map((file) => file.filename).join('\n') || 'No files changed.';
+        // console.log(`Files changed in push: ${fileList}`);
+      }
+
+      // Setting a single, consistent output for both event types.
+      core.setOutput('filesList', fileList);
     } else {
       console.log('This action runs on pull_request and push events. Current event is neither.');
     }
