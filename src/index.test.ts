@@ -5,7 +5,7 @@ jest.mock('@actions/github');
 
 import * as core from '@actions/core';
 import { context, getOctokit } from '@actions/github';
-import run from './index'; // Assuming you export a run function in your action script
+import { run } from './index';
 
 // Mock the getOctokit method to return a mocked octokit instance
 jest.mock('@actions/github', () => ({

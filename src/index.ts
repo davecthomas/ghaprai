@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { context } from '@actions/github';
 
-async function run(): Promise<void> {
+export async function run(): Promise<void> {
   try {
     const token: string = core.getInput('GITHUB_TOKEN', { required: true });
     const octokit = github.getOctokit(token);
@@ -20,7 +20,7 @@ async function run(): Promise<void> {
         pull_number: prNumber,
       });
 
-      const fileList: string = files.map(file => file.filename).join('\n');
+      const fileList: string = files.map((file) => file.filename).join('\n') || 'No files changed.';
       console.log(`Files changed in PR #${prNumber}: ${fileList}`);
       core.setOutput('prFiles', fileList);
     } else if (eventName === 'push') {
@@ -34,7 +34,7 @@ async function run(): Promise<void> {
         head: ref,
       });
 
-      const fileList: string = commitDiff.files ? commitDiff.files.map(file => file.filename).join('\n');
+      const fileList: string = commitDiff.files?.map((file) => file.filename).join('\n') || 'No files changed.';
       console.log(`Files changed in push: ${fileList}`);
       core.setOutput('pushFiles', fileList);
     } else {
