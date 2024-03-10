@@ -22,7 +22,8 @@ export async function run(): Promise<void> {
 
       const fileList: string = files.map((file) => file.filename).join('\n') || 'No files changed.';
       console.log(`Files changed in PR #${prNumber}: ${fileList}`);
-      core.setOutput('prFiles', fileList);
+      core.setOutput('prFiles', fileList); // Unused output
+      core.setOutput('log_pr_details', fileList);
     } else if (eventName === 'push') {
       const ref: string = context.payload.after!;
       const compare: string = context.payload.before!;
@@ -36,7 +37,8 @@ export async function run(): Promise<void> {
 
       const fileList: string = commitDiff.files?.map((file) => file.filename).join('\n') || 'No files changed.';
       console.log(`Files changed in push: ${fileList}`);
-      core.setOutput('pushFiles', fileList);
+      core.setOutput('pushFiles', fileList); // Unused output
+      core.setOutput('log_pr_details', fileList);
     } else {
       console.log('This action runs on pull_request and push events. Current event is neither.');
     }
