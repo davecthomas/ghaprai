@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "build": "tsc"
+    "build": "tsc && cp src/action.yml dist/action.yml"
   },
   "repository": {
     "type": "git",
