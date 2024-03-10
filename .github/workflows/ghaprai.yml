@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: List files in the PR
         uses: davecthomas/ghaprai@main
         id: log_pr_details # This ID is used to reference the output of this step
@@ -20,3 +20,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Display PR Files
         run: echo 'Files changed in the PR:' ${{ steps.log_pr_details.outputs.files }}
+branding:
+  icon: 'eye'
+  color: 'silver'
