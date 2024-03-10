@@ -1,0 +1,12 @@
+name: 'List PR Files'
+description: 'Lists all files changed in a pull request.'
+inputs:
+  GITHUB_TOKEN:
+    description: 'GitHub token for making authenticated API calls.'
+    required: true
+outputs:
+  prFiles:
+    description: 'A newline-delimited string listing the files changed in the PR.'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
