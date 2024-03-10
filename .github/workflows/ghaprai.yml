@@ -14,7 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: List files in the PR
-        uses: ./.github/actions/ghaprai
+        uses: davecthomas/ghaprai@main
         id: log_pr_details # This ID is used to reference the output of this step
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
