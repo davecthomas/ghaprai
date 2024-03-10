@@ -14,9 +14,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: List files in the PR
-        uses: ./.github/actions/ghaprai # Adjust this path based on where your action is located
+        uses: ./.github/actions/ghaprai 
         id: log_pr_details # This ID is used to reference the output of this step
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Display PR Files
-        run: echo "Files changed in the PR: ${{ steps.log_pr_details.outputs.prFiles }}"
+        run: echo "Files changed in the PR: "${{ steps.log_pr_details.outputs.prFiles }}
