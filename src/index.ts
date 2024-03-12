@@ -27,6 +27,14 @@ async function getDiffForFile(
   head: string,
   filename: string
 ): Promise<string> {
+  console.log(
+    `Fetching diff for ${filename} params: ${{
+      owner,
+      repo,
+      base,
+      head,
+    }}`
+  )
   let commitDiff: CommitComparisonResult
   try {
     const response = await octokit.rest.repos.compareCommits({
