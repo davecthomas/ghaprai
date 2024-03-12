@@ -28,12 +28,16 @@ async function getDiffForFile(
   filename: string
 ): Promise<string> {
   console.log(
-    `Fetching diff for ${filename} params: ${{
-      owner,
-      repo,
-      base,
-      head,
-    }}`
+    `Fetching diff for ${filename} params: ${JSON.stringify(
+      {
+        owner,
+        repo,
+        base,
+        head,
+      },
+      null,
+      2
+    )}`
   )
   let commitDiff: CommitComparisonResult
   try {
