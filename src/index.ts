@@ -27,13 +27,20 @@ async function getDiffForFile(
   head: string,
   filename: string
 ): Promise<string> {
-  const commitDiff: CommitComparisonResult =
-    await octokit.rest.repos.compareCommits({
+  let commitDiff: CommitComparisonResult
+  try {
+    const response = await octokit.rest.repos.compareCommits({
       owner,
       repo,
       base,
       head,
     })
+    commitDiff = response.data as CommitComparisonResult
+    console.log(commitDiff)
+  } catch (error) {
+    console.error("Error fetching commit diff:", error)
+    return `Failed to fetch diffs for ${filename}`
+  }
 
   console.log(`Comparing commits: base ${base}, head ${head}`)
   console.log(`Total files changed: ${commitDiff.files?.length}`)
