@@ -14,7 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2 # Fetches the last two commits including the commit that triggered the workflow
+          fetch-depth: 1 # Fetches the last commit that triggered the workflow
       - name: Evaluate a push or PR for issues
         uses: davecthomas/ghaprai@main
         id: log_pr_details # This ID is used to reference the output of this step

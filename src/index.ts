@@ -27,7 +27,6 @@ async function getDiffForFile(
   head: string,
   filename: string
 ): Promise<string> {
-  // Example assuming commitDiff is of type CommitComparisonResult
   const commitDiff: CommitComparisonResult =
     await octokit.rest.repos.compareCommits({
       owner,
@@ -36,16 +35,16 @@ async function getDiffForFile(
       head,
     })
 
-  // Now TypeScript knows the structure of objects within commitDiff.files
-  // Assuming commitDiff.files is an array of CommitComparisonFile and won't be undefined
-  const fileDiff = commitDiff.files?.find(
-    (file): file is CommitComparisonFile => file.filename === filename
-  )
+  console.log(`Comparing commits: base ${base}, head ${head}`)
+  console.log(`Total files changed: ${commitDiff.files?.length}`)
 
-  // Check if a diff was found for the file, and if so, return the formatted diff.
+  const fileDiff = commitDiff.files?.find((file) => file.filename === filename)
+
   if (fileDiff && fileDiff.patch) {
+    console.log(`Found changes for ${filename}`)
     return `Diff from base ${base} to head ${head} for ${filename}:\n${fileDiff.patch}\n`
   } else {
+    console.log(`No changes found for ${filename}`)
     return `No changes from base ${base} to head ${head} for ${filename}`
   }
 }
