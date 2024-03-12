@@ -42,9 +42,12 @@ async function getDiffForFile(
     (file): file is CommitComparisonFile => file.filename === filename
   )
 
-  return fileDiff
-    ? `Diff for ${filename}:\n${fileDiff.patch}\n`
-    : `No changes for ${filename}`
+  // Check if a diff was found for the file, and if so, return the formatted diff.
+  if (fileDiff && fileDiff.patch) {
+    return `Diff from base ${base} to head ${head} for ${filename}:\n${fileDiff.patch}\n`
+  } else {
+    return `No changes from base ${base} to head ${head} for ${filename}`
+  }
 }
 
 export async function run(): Promise<void> {

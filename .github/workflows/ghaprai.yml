@@ -23,4 +23,4 @@ jobs:
         run: echo 'Files changed in the PR:' ${{ steps.log_pr_details.outputs.filesList }}
 
       - name: Display Diffs
-        run: echo 'Diffs for the changed files:' ${{ steps.log_pr_details.outputs.diffs }}
+        run: echo 'Diffs for the changed files:' "${{ steps.log_pr_details.outputs.diffs }}"
