@@ -50,7 +50,8 @@ async function getDiffForFile(
 
   if (fileDiff && fileDiff.patch) {
     console.log(`Found changes for ${filename}`)
-    return `Diff from base ${base} to head ${head} for ${filename}:\n${fileDiff.patch}\n`
+    // return `Diff from base ${base} to head ${head} for ${filename}:\n${fileDiff.patch}\n`
+    return `Diff from base ${base} to head ${head} for ${filename}:\n`
   } else {
     console.log(`No changes found for ${filename}`)
     return `No changes from base ${base} to head ${head} for ${filename}`
