@@ -4,9 +4,9 @@ import { Endpoints } from "@octokit/types"
 const { Configuration, OpenAIApi } = require("openai")
 const apiKey: string | undefined = process.env.OPENAI_API_KEY
 console.log("Apikey: " + apiKey)
-// const configuration = new Configuration({
-//   apiKey: apiKey,
-// })
+const configuration = new Configuration({
+  apiKey: apiKey,
+})
 // const openai = new OpenAIApi(configuration)
 
 // Define types for the files obtained from GitHub API responses

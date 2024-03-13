@@ -12,14 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         uses: actions/checkout@v4
         with:
           fetch-depth: 1 # The default. Fetches the last commit that triggered the workflow
       - name: Evaluate a push or PR for issues
         uses: davecthomas/ghaprai@main
         id: log_pr_details
+        env: # Move OPENAI_API_KEY env here if it's used within this action
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
