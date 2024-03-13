@@ -41,7 +41,6 @@ async function getDiffForFile(
       head,
     })
     commitDiff = response.data as CommitComparisonResult
-    // console.log(commitDiff)
   } catch (error) {
     console.error("Error fetching commit diff:", error)
     return `Failed to fetch diffs for ${filename}`
@@ -85,9 +84,6 @@ async function fetchOpenAIDescription(diff: string) {
     console.error("Failed to fetch description from OpenAI:", error)
   }
 }
-
-// Example usage
-fetchOpenAIDescription("Your code diff here")
 
 export async function run(): Promise<void> {
   try {
@@ -158,7 +154,7 @@ export async function run(): Promise<void> {
     // for (const diff of diffs) {
     //   fetchOpenAIDescription(diff)
     // }
-    console.log("File names: \n\n\n" + filenames.join("\n") + "\n")
+
     const diffsJoined: string = diffs.join("\n")
     const encodedDiff = Buffer.from(diffsJoined).toString("base64")
     core.setOutput("encodedDiffs", encodedDiff)
