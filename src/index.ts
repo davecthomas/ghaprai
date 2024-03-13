@@ -1,11 +1,11 @@
 import * as core from "@actions/core"
 import { context, getOctokit } from "@actions/github"
 import { Endpoints } from "@octokit/types"
-const { Configuration, OpenAIApi } = require("openai")
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-})
-const openai = new OpenAIApi(configuration)
+// const { Configuration, OpenAIApi } = require("openai")
+// const configuration = new Configuration({
+//   apiKey: process.env.OPENAI_API_KEY,
+// })
+// const openai = new OpenAIApi(configuration)
 
 // Define types for the files obtained from GitHub API responses
 type GitHubFile =
@@ -60,30 +60,30 @@ async function getDiffForFile(
   }
 }
 
-// Get a list of OpenAI models
-async function listModels() {
-  try {
-    const response = await openai.listModels({})
-    console.log(response.data)
-  } catch (error) {
-    console.error("Error listing OpenAI models:", error)
-  }
-}
+// // Get a list of OpenAI models
+// async function listModels() {
+//   try {
+//     const response = await openai.listModels({})
+//     console.log(response.data)
+//   } catch (error) {
+//     console.error("Error listing OpenAI models:", error)
+//   }
+// }
 
-// Ask OpenAI to describe the code changes in the diff
-async function fetchOpenAIDescription(diff: string) {
-  try {
-    const response = await openai.createCompletion({
-      model: "text-davinci-003", // Specify the model
-      prompt: `Describe the following code changes in this github diff between a base and head commit:\n${diff}`,
-      temperature: 0.7,
-      max_tokens: 150,
-    })
-    console.log(response.data.choices[0].text)
-  } catch (error) {
-    console.error("Failed to fetch description from OpenAI:", error)
-  }
-}
+// // Ask OpenAI to describe the code changes in the diff
+// async function fetchOpenAIDescription(diff: string) {
+//   try {
+//     const response = await openai.createCompletion({
+//       model: "text-davinci-003", // Specify the model
+//       prompt: `Describe the following code changes in this github diff between a base and head commit:\n${diff}`,
+//       temperature: 0.7,
+//       max_tokens: 150,
+//     })
+//     console.log(response.data.choices[0].text)
+//   } catch (error) {
+//     console.error("Failed to fetch description from OpenAI:", error)
+//   }
+// }
 
 export async function run(): Promise<void> {
   try {
