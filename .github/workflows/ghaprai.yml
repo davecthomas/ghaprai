@@ -21,7 +21,10 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Display PR Files
+      - name: Count Files
+        run: echo 'Files changed in the PR:' ${{ steps.log_pr_details.outputs.countFiles }}
+
+      - name: List Files
         run: echo 'Files changed in the PR:' ${{ steps.log_pr_details.outputs.filesList }}
 
       - name: Display Diffs

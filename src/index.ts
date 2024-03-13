@@ -54,8 +54,8 @@ async function getDiffForFile(
     return `Failed to fetch diffs for ${filename}`
   }
 
-  console.log(`Comparing commits: base ${base}, head ${head}`)
-  console.log(`Total files changed: ${commitDiff.files?.length}`)
+  //   console.log(`Comparing commits: base ${base}, head ${head}`)
+  //   console.log(`Total files changed: ${commitDiff.files?.length}`)
 
   const fileDiff = commitDiff.files?.find((file) => file.filename === filename)
 
@@ -137,7 +137,8 @@ export async function run(): Promise<void> {
     const encodedDiff = Buffer.from(diffsJoined).toString("base64")
     core.setOutput("encodedDiffs", encodedDiff)
     core.setOutput("filesList", filenames.join("\n") + "\n")
-    console.log(filenames.join("\n") + "\n")
+    core.setOutput("countFiles", filenames.length.toString())
+    console.log("File names: \n\n\n" + filenames.join("\n") + "\n")
     // core.setOutput("diffs", diffsJoined)
     // console.log(diffsJoined)
   } catch (error) {
