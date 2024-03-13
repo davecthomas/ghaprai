@@ -1,7 +1,7 @@
 import * as core from "@actions/core"
 import { context, getOctokit } from "@actions/github"
 import { Endpoints } from "@octokit/types"
-const { Configuration, OpenAIApi } = require("openai")
+import OpenAI from "openai"
 const apiKey: string | undefined = process.env.OPENAI_API_KEY
 
 // Define types for the files obtained from GitHub API responses
@@ -58,15 +58,23 @@ async function getDiffForFile(
   }
 }
 
-// // Get a list of OpenAI models
-// async function listModels() {
-//   try {
-//     const response = await openai.listModels({})
-//     console.log(response.data)
-//   } catch (error) {
-//     console.error("Error listing OpenAI models:", error)
-//   }
-// }
+async function listModels(openAiClient: OpenAI): Promise<any[]> {
+  try {
+    const response = await openAiClient.models.list()
+    // Direct access to the models assuming the SDK handles pagination and structure internally.
+    const models = response.data // Use 'any' if specific typing is unavailable or unclear.
+
+    // Log model details for demonstration purposes
+    models.forEach((model: any) => {
+      console.log(`Model ID: ${model.id}`)
+    })
+
+    return models.map((model: any) => model.id)
+  } catch (error) {
+    console.error("Error listing OpenAI models:", error)
+    return []
+  }
+}
 
 // // Ask OpenAI to describe the code changes in the diff
 // async function fetchOpenAIDescription(diff: string) {
@@ -151,22 +159,22 @@ export async function run(): Promise<void> {
       return
     }
 
-    // listModels() // List OpenAI models available
     // for (const diff of diffs) {
     //   fetchOpenAIDescription(diff)
     // }
 
-    // const diffsJoined: string = diffs.join("\n")
-    // const encodedDiff = Buffer.from(diffsJoined).toString("base64")
-    // core.setOutput("encodedDiffs", encodedDiff)
-    // core.setOutput("filesList", filenames.join(", "))
-    // core.setOutput("countFiles", filenames.length.toString())
-    const openAiConfiguration = new Configuration({
-      apiKey: apiKey,
+    const diffsJoined: string = diffs.join("\n")
+    const encodedDiff = Buffer.from(diffsJoined).toString("base64")
+    core.setOutput("encodedDiffs", encodedDiff)
+    core.setOutput("filesList", filenames.join(", "))
+    core.setOutput("countFiles", filenames.length.toString())
+    core.setOutput("diffs", diffsJoined)
+    const openAiClient = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
     })
-    // const openai = new OpenAIApi(openAiConfiguration)
+    const models = await listModels(openAiClient)
+    core.setOutput("openAiModels", JSON.stringify(models))
 
-    // core.setOutput("diffs", diffsJoined)
     // console.log(diffsJoined)
   } catch (error) {
     core.setFailed(`Action failed with error: ${error}`)
