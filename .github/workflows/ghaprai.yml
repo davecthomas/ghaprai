@@ -14,7 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1 # Fetches the last commit that triggered the workflow
+          fetch-depth: 1 # The default. Fetches the last commit that triggered the workflow
       - name: Evaluate a push or PR for issues
         uses: davecthomas/ghaprai@main
         id: log_pr_details # This ID is used to reference the output of this step
@@ -25,4 +25,6 @@ jobs:
         run: echo 'Files changed in the PR:' ${{ steps.log_pr_details.outputs.filesList }}
 
       - name: Display Diffs
-        run: echo 'Diffs for the changed files:' "${{ steps.log_pr_details.outputs.diffs }}"
+        run: |
+          echo 'Diffs for the changed files:' 
+          echo '${{ steps.log_pr_details.outputs.encodedDiffs }}' | base64 --decode

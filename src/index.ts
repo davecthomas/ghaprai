@@ -78,6 +78,7 @@ export async function run(): Promise<void> {
     const repoName: string = context.repo.repo
 
     let diffs: string[] = []
+    let filenames: string[] = []
 
     if (eventName === "pull_request") {
       const prNumber = context.payload.pull_request!.number
@@ -91,7 +92,7 @@ export async function run(): Promise<void> {
       for (const file of files) {
         const base = context.payload.pull_request!.base.sha
         const head = context.payload.pull_request!.head.sha
-        const diff = await getDiffForFile(
+        const diff: string = await getDiffForFile(
           octokit,
           repoOwner,
           repoName,
@@ -99,8 +100,8 @@ export async function run(): Promise<void> {
           head,
           file.filename
         )
-        console.log("Diff for file ${file.filename}", diff)
         diffs.push(diff)
+        filenames.push(file.filename)
       }
     } else if (eventName === "push") {
       const ref: string = context.payload.after!
@@ -132,8 +133,12 @@ export async function run(): Promise<void> {
     }
 
     const diffsJoined: string = diffs.join("\n")
-    core.setOutput("diffs", diffsJoined)
-    console.log(diffsJoined)
+
+    const encodedDiff = Buffer.from(diffsJoined).toString("base64")
+    core.setOutput("encodedDiffs", encodedDiff)
+    core.setOutput("filesList", filenames.join("\n") + "\n")
+    // core.setOutput("diffs", diffsJoined)
+    // console.log(diffsJoined)
   } catch (error) {
     core.setFailed(`Action failed with error: ${error}`)
   }
