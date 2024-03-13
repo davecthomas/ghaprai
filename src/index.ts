@@ -3,11 +3,6 @@ import { context, getOctokit } from "@actions/github"
 import { Endpoints } from "@octokit/types"
 const { Configuration, OpenAIApi } = require("openai")
 const apiKey: string | undefined = process.env.OPENAI_API_KEY
-console.log("Apikey: " + apiKey)
-const configuration = new Configuration({
-  apiKey: apiKey,
-})
-// const openai = new OpenAIApi(configuration)
 
 // Define types for the files obtained from GitHub API responses
 type GitHubFile =
@@ -152,6 +147,7 @@ export async function run(): Promise<void> {
       )
       return
     }
+
     // listModels() // List OpenAI models available
     // for (const diff of diffs) {
     //   fetchOpenAIDescription(diff)
@@ -162,6 +158,10 @@ export async function run(): Promise<void> {
     core.setOutput("encodedDiffs", encodedDiff)
     core.setOutput("filesList", filenames.join(", "))
     core.setOutput("countFiles", filenames.length.toString())
+    const openAiConfiguration = new Configuration({
+      apiKey: apiKey,
+    })
+    // const openai = new OpenAIApi(configuration)
 
     // core.setOutput("diffs", diffsJoined)
     // console.log(diffsJoined)
