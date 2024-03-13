@@ -27,18 +27,18 @@ async function getDiffForFile(
   head: string,
   filename: string
 ): Promise<string> {
-  console.log(
-    `Fetching diff for ${filename} params: ${JSON.stringify(
-      {
-        owner,
-        repo,
-        base,
-        head,
-      },
-      null,
-      2
-    )}`
-  )
+  //   console.log(
+  //     `Fetching diff for ${filename} params: ${JSON.stringify(
+  //       {
+  //         owner,
+  //         repo,
+  //         base,
+  //         head,
+  //       },
+  //       null,
+  //       2
+  //     )}`
+  //   )
   let commitDiff: CommitComparisonResult
   try {
     const response = await octokit.rest.repos.compareCommits({
@@ -48,7 +48,7 @@ async function getDiffForFile(
       head,
     })
     commitDiff = response.data as CommitComparisonResult
-    console.log(commitDiff)
+    // console.log(commitDiff)
   } catch (error) {
     console.error("Error fetching commit diff:", error)
     return `Failed to fetch diffs for ${filename}`
@@ -137,6 +137,7 @@ export async function run(): Promise<void> {
     const encodedDiff = Buffer.from(diffsJoined).toString("base64")
     core.setOutput("encodedDiffs", encodedDiff)
     core.setOutput("filesList", filenames.join("\n") + "\n")
+    console.log(filenames.join("\n") + "\n")
     // core.setOutput("diffs", diffsJoined)
     // console.log(diffsJoined)
   } catch (error) {

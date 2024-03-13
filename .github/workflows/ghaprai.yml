@@ -17,7 +17,7 @@ jobs:
           fetch-depth: 1 # The default. Fetches the last commit that triggered the workflow
       - name: Evaluate a push or PR for issues
         uses: davecthomas/ghaprai@main
-        id: log_pr_details # This ID is used to reference the output of this step
+        id: log_pr_details
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
