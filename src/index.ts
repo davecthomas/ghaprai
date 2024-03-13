@@ -107,6 +107,7 @@ export async function run(): Promise<void> {
       for (const file of files) {
         const base = context.payload.pull_request!.base.sha
         const head = context.payload.pull_request!.head.sha
+        if (file.filename === "dist/index.js") continue
         const diff: string = await getDiffForFile(
           octokit,
           repoOwner,
@@ -131,6 +132,7 @@ export async function run(): Promise<void> {
         })
 
       for (const file of commitDiff.files!) {
+        if (file.filename === "dist/index.js") continue
         const diff = await getDiffForFile(
           octokit,
           repoOwner,
