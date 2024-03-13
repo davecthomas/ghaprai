@@ -154,15 +154,15 @@ export async function run(): Promise<void> {
     //   fetchOpenAIDescription(diff)
     // }
 
-    const diffsJoined: string = diffs.join("\n")
-    const encodedDiff = Buffer.from(diffsJoined).toString("base64")
-    core.setOutput("encodedDiffs", encodedDiff)
-    core.setOutput("filesList", filenames.join(", "))
-    core.setOutput("countFiles", filenames.length.toString())
-    // const openAiConfiguration = new Configuration({
-    //   apiKey: apiKey,
-    // })
-    // const openai = new OpenAIApi(configuration)
+    // const diffsJoined: string = diffs.join("\n")
+    // const encodedDiff = Buffer.from(diffsJoined).toString("base64")
+    // core.setOutput("encodedDiffs", encodedDiff)
+    // core.setOutput("filesList", filenames.join(", "))
+    // core.setOutput("countFiles", filenames.length.toString())
+    const openAiConfiguration = new Configuration({
+      apiKey: apiKey,
+    })
+    const openai = new OpenAIApi(openAiConfiguration)
 
     // core.setOutput("diffs", diffsJoined)
     // console.log(diffsJoined)
