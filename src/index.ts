@@ -132,14 +132,14 @@ export async function run(): Promise<void> {
         "This action runs on pull_request and push events. Current event is neither."
       )
     }
-
+    console.log("File names: \n\n\n" + filenames.join("\n") + "\n")
     const diffsJoined: string = diffs.join("\n")
 
     const encodedDiff = Buffer.from(diffsJoined).toString("base64")
     core.setOutput("encodedDiffs", encodedDiff)
-    core.setOutput("filesList", filenames.join("\n") + "\n")
+    core.setOutput("filesList", filenames.join(", "))
     core.setOutput("countFiles", filenames.length.toString())
-    console.log("File names: \n\n\n" + filenames.join("\n") + "\n")
+
     // core.setOutput("diffs", diffsJoined)
     // console.log(diffsJoined)
   } catch (error) {
