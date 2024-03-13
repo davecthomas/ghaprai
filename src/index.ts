@@ -72,7 +72,7 @@ async function getDiffForFile(
 // async function fetchOpenAIDescription(diff: string) {
 //   try {
 //     const response = await openai.createCompletion({
-//       model: "text-davinci-003", // Specify the model
+//       model: "gpt-4-1106-preview", // Specify the model
 //       prompt: `Describe the following code changes in this github diff between a base and head commit:\n${diff}`,
 //       temperature: 0.7,
 //       max_tokens: 150,
@@ -162,7 +162,7 @@ export async function run(): Promise<void> {
     const openAiConfiguration = new Configuration({
       apiKey: apiKey,
     })
-    const openai = new OpenAIApi(openAiConfiguration)
+    // const openai = new OpenAIApi(openAiConfiguration)
 
     // core.setOutput("diffs", diffsJoined)
     // console.log(diffsJoined)
