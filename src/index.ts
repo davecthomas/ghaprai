@@ -154,10 +154,10 @@ export async function run(): Promise<void> {
       )
       return
     }
-    listModels() // List OpenAI models available
-    for (const diff of diffs) {
-      fetchOpenAIDescription(diff)
-    }
+    // listModels() // List OpenAI models available
+    // for (const diff of diffs) {
+    //   fetchOpenAIDescription(diff)
+    // }
     console.log("File names: \n\n\n" + filenames.join("\n") + "\n")
     const diffsJoined: string = diffs.join("\n")
     const encodedDiff = Buffer.from(diffsJoined).toString("base64")
