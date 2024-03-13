@@ -50,8 +50,8 @@ async function getDiffForFile(
 
   if (fileDiff && fileDiff.patch) {
     console.log(`Found changes for ${filename}`)
-    // return `Diff from base ${base} to head ${head} for ${filename}:\n${fileDiff.patch}\n`
-    return `Diff from base ${base} to head ${head} for ${filename}:\n`
+    return `Diff from base ${base} to head ${head} for ${filename}:\n${fileDiff.patch}\n`
+    // return `Diff from base ${base} to head ${head} for ${filename}:\n`
   } else {
     console.log(`No changes found for ${filename}`)
     return `No changes from base ${base} to head ${head} for ${filename}`
@@ -159,9 +159,9 @@ export async function run(): Promise<void> {
     core.setOutput("encodedDiffs", encodedDiff)
     core.setOutput("filesList", filenames.join(", "))
     core.setOutput("countFiles", filenames.length.toString())
-    const openAiConfiguration = new Configuration({
-      apiKey: apiKey,
-    })
+    // const openAiConfiguration = new Configuration({
+    //   apiKey: apiKey,
+    // })
     // const openai = new OpenAIApi(configuration)
 
     // core.setOutput("diffs", diffsJoined)
