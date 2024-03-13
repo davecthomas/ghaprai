@@ -2,9 +2,11 @@ import * as core from "@actions/core"
 import { context, getOctokit } from "@actions/github"
 import { Endpoints } from "@octokit/types"
 const { Configuration, OpenAIApi } = require("openai")
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-})
+const apiKey: string | undefined = process.env.OPENAI_API_KEY
+console.log("Apikey: " + apiKey)
+// const configuration = new Configuration({
+//   apiKey: apiKey,
+// })
 // const openai = new OpenAIApi(configuration)
 
 // Define types for the files obtained from GitHub API responses
