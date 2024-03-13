@@ -99,6 +99,7 @@ export async function run(): Promise<void> {
           head,
           file.filename
         )
+        console.log("Diff for file ${file.filename}", diff)
         diffs.push(diff)
       }
     } else if (eventName === "push") {
