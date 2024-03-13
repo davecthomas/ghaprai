@@ -125,6 +125,7 @@ export async function run(): Promise<void> {
           file.filename
         )
         diffs.push(diff)
+        filenames.push(file.filename)
       }
     } else {
       console.log(
