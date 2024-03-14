@@ -2,6 +2,7 @@ import * as core from "@actions/core"
 import { context, getOctokit } from "@actions/github"
 import { Endpoints } from "@octokit/types"
 import OpenAI from "openai"
+
 const apiKey: string | undefined = process.env.OPENAI_API_KEY
 
 // Define types for the files obtained from GitHub API responses
@@ -80,21 +81,35 @@ async function fetchOpenAIDescription(
   diff: string
 ): Promise<string> {
   try {
-    const completion = await openai.completions.create({
-      model: "gpt-4-1106-preview", // Adjust the model as needed
-      prompt: `Describe the following code changes in this github diff between a base and head commit:\n${diff}`,
-      temperature: 0.7,
-      max_tokens: 150,
-      n: 1, // Number of completions to generate
+    // const completion = await openai.completions.create({
+    //   model: "gpt-4-turbo-preview", // Adjust the model as needed
+    //   prompt: `Describe the following code changes in this github diff between a base and head commit:\n${diff}`,
+    //   temperature: 0.7,
+    //   max_tokens: 200,
+    //   n: 1, // Number of completions to generate
+    // })
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4-turbo-preview", // Adjust as necessary to the model you intend to use.
+      messages: [
+        {
+          role: "system",
+          content: `Describe the following code changes in this github diff between a base and head commit:\n${diff}`,
+        },
+      ],
     })
-    // Directly access the 'choices' from the 'completion' object
-    if (completion.choices?.length > 0 && completion.choices[0].text) {
-      return completion.choices[0].text.trim()
+    if (
+      completion.choices &&
+      completion.choices.length > 0 &&
+      completion.choices[0].message.content
+    ) {
+      const assistantMessage: string = completion.choices[0].message.content
+      return assistantMessage?.trim()
+    } else {
+      return "No explanation was provided."
     }
-    return "No completion found."
   } catch (error) {
-    console.error("Failed to fetch description from OpenAI:", error)
-    return "Error fetching description."
+    console.error("Error fetching explanation from OpenAI:", error)
+    return "Error fetching explanation."
   }
 }
 
