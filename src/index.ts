@@ -58,18 +58,17 @@ async function getDiffForFile(
   }
 }
 
-async function listModels(openAiClient: OpenAI): Promise<any[]> {
+async function listModels(openAiClient: OpenAI): Promise<string[]> {
   try {
     const response = await openAiClient.models.list()
-    // Direct access to the models assuming the SDK handles pagination and structure internally.
-    const models = response.data // Use 'any' if specific typing is unavailable or unclear.
+    // Assuming the response properly contains the JSON structure as per the OpenAI API reference.
+    // Directly accessing 'data' from the response to get the array of models.
+    const models = response.data
 
-    // Log model details for demonstration purposes
-    models.forEach((model: any) => {
-      console.log(`Model ID: ${model.id}`)
-    })
-
-    return models.map((model: any) => model.id)
+    // Extract model IDs from each model object in the array.
+    const modelIds: string[] = models.map((model: { id: string }) => model.id)
+    console.log("OpenAI models:", modelIds)
+    return modelIds
   } catch (error) {
     console.error("Error listing OpenAI models:", error)
     return []
@@ -184,7 +183,7 @@ export async function run(): Promise<void> {
     })
     const models = await listModels(openAiClient)
     core.setOutput("openAiModels", JSON.stringify(models))
-    processDiffsAndSetOutput(openAiClient, diffs) // For each diff, fetch a description from OpenAI and set the output
+    await processDiffsAndSetOutput(openAiClient, diffs) // For each diff, fetch a description from OpenAI and set the output
 
     // console.log(diffsJoined)
   } catch (error) {
