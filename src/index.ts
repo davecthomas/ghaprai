@@ -6,6 +6,7 @@ import OpenAI from "openai"
 const apiKey: string | undefined = process.env.OPENAI_API_KEY
 const openAiModel: string | undefined = process.env.OPENAI_MODEL
 const defaultOpenAiModel: string = "gpt-4-turbo-preview"
+const maxTokens: number = 200 // Max tokens for OpenAI completions. Making this huge is both expensive and unnecessary.
 
 // Define types for the files obtained from GitHub API responses
 type GitHubFile =
@@ -95,9 +96,10 @@ async function fetchOpenAIDescription(
       messages: [
         {
           role: "system",
-          content: `Describe the following code changes in this github diff between a base and head commit, limiting your insights to logic and string content changes only. Ignore formatting and white space changes.\n${diff}`,
+          content: `In fewer than ${maxTokens}, describe the following code changes in this github diff between a base and head commit, limiting your insights to logic and string content changes only. Ignore formatting and white space changes.\n${diff}`,
         },
       ],
+      max_tokens: maxTokens,
     })
     if (
       completion.choices &&
@@ -199,8 +201,8 @@ export async function run(): Promise<void> {
     const openAiClient = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
     })
-    const models = await listModels(openAiClient)
-    core.setOutput("openAiModels", JSON.stringify(models))
+    // const models = await listModels(openAiClient)
+    // core.setOutput("openAiModels", JSON.stringify(models))
     await processDiffsAndSetOutput(openAiClient, diffs) // For each diff, fetch a description from OpenAI and set the output
 
     // console.log(diffsJoined)
