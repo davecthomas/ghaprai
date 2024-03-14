@@ -33,3 +33,11 @@ jobs:
         run: |
           echo 'Diffs for the changed files:' 
           echo '${{ steps.log_pr_details.outputs.encodedDiffs }}' | base64 --decode
+      - name: Run the AI 1
+        run: |
+          echo 'Running the AI on the changed files:' 
+          echo '${{ steps.log_pr_details.outputs.openAiModels }}'
+      - name: Run the AI 2
+        run: |
+          echo 'Running the AI on the changed files:' 
+          echo '${{ steps.log_pr_details.outputs.openAiDiffResponse }}'

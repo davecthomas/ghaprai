@@ -76,20 +76,34 @@ async function listModels(openAiClient: OpenAI): Promise<any[]> {
   }
 }
 
-// // Ask OpenAI to describe the code changes in the diff
-// async function fetchOpenAIDescription(diff: string) {
-//   try {
-//     const response = await openai.createCompletion({
-//       model: "gpt-4-1106-preview", // Specify the model
-//       prompt: `Describe the following code changes in this github diff between a base and head commit:\n${diff}`,
-//       temperature: 0.7,
-//       max_tokens: 150,
-//     })
-//     console.log(response.data.choices[0].text)
-//   } catch (error) {
-//     console.error("Failed to fetch description from OpenAI:", error)
-//   }
-// }
+async function fetchOpenAIDescription(
+  openai: OpenAI,
+  diff: string
+): Promise<string> {
+  try {
+    const completion = await openai.completions.create({
+      model: "gpt-4-1106-preview", // Adjust the model as needed
+      prompt: `Describe the following code changes in this github diff between a base and head commit:\n${diff}`,
+      temperature: 0.7,
+      max_tokens: 150,
+      n: 1, // Number of completions to generate
+    })
+    // Directly access the 'choices' from the 'completion' object
+    if (completion.choices?.length > 0 && completion.choices[0].text) {
+      return completion.choices[0].text.trim()
+    }
+    return "No completion found."
+  } catch (error) {
+    console.error("Failed to fetch description from OpenAI:", error)
+    return "Error fetching description."
+  }
+}
+
+async function processDiffsAndSetOutput(openAiClient: OpenAI, diffs: string[]) {
+  let promises = diffs.map((diff) => fetchOpenAIDescription(openAiClient, diff))
+  let arrayDiffResponse = await Promise.all(promises)
+  core.setOutput("openAiDiffResponse", JSON.stringify(arrayDiffResponse))
+}
 
 export async function run(): Promise<void> {
   try {
@@ -159,10 +173,6 @@ export async function run(): Promise<void> {
       return
     }
 
-    // for (const diff of diffs) {
-    //   fetchOpenAIDescription(diff)
-    // }
-
     const diffsJoined: string = diffs.join("\n")
     const encodedDiff = Buffer.from(diffsJoined).toString("base64")
     core.setOutput("encodedDiffs", encodedDiff)
@@ -174,6 +184,7 @@ export async function run(): Promise<void> {
     })
     const models = await listModels(openAiClient)
     core.setOutput("openAiModels", JSON.stringify(models))
+    processDiffsAndSetOutput(openAiClient, diffs) // For each diff, fetch a description from OpenAI and set the output
 
     // console.log(diffsJoined)
   } catch (error) {
