@@ -4,6 +4,8 @@ import { Endpoints } from "@octokit/types"
 import OpenAI from "openai"
 
 const apiKey: string | undefined = process.env.OPENAI_API_KEY
+const openAiModel: string | undefined = process.env.OPENAI_MODEL
+const defaultOpenAiModel: string = "gpt-4-turbo-preview"
 
 // Define types for the files obtained from GitHub API responses
 type GitHubFile =
@@ -89,11 +91,11 @@ async function fetchOpenAIDescription(
     //   n: 1, // Number of completions to generate
     // })
     const completion = await openai.chat.completions.create({
-      model: "gpt-4-turbo-preview", // Adjust as necessary to the model you intend to use.
+      model: openAiModel ? openAiModel : defaultOpenAiModel,
       messages: [
         {
           role: "system",
-          content: `Describe the following code changes in this github diff between a base and head commit:\n${diff}`,
+          content: `Describe the following code changes in this github diff between a base and head commit, limiting your insights to logic and string content changes only. Ignore formatting and white space changes.\n${diff}`,
         },
       ],
     })
@@ -103,7 +105,8 @@ async function fetchOpenAIDescription(
       completion.choices[0].message.content
     ) {
       const assistantMessage: string = completion.choices[0].message.content
-      return assistantMessage?.trim()
+      console.log("OpenAI response:", assistantMessage)
+      return assistantMessage.trim()
     } else {
       return "No explanation was provided."
     }
