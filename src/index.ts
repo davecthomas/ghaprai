@@ -129,15 +129,11 @@ async function processDiffsAiDescription(
     )
   )
   let arrayDiffResponse = await Promise.all(promises)
-  core.setOutput(
-    processDiffsAiDescription.name,
-    JSON.stringify(arrayDiffResponse)
-  )
+  core.setOutput("processDiffsAiDescription", JSON.stringify(arrayDiffResponse))
 }
 
 // Fetch analysis from OpenAI for each diff and set the output based on the function name
 async function processDiffsAiAnalysis(openAiClient: OpenAI, diffs: string[]) {
-  console.log(`testing ${processDiffsAiAnalysis.name}`)
   let promises = diffs.map((diff) =>
     promptOpenAI(
       openAiClient,
@@ -146,7 +142,7 @@ async function processDiffsAiAnalysis(openAiClient: OpenAI, diffs: string[]) {
     )
   )
   let arrayDiffResponse = await Promise.all(promises)
-  core.setOutput(processDiffsAiAnalysis.name, JSON.stringify(arrayDiffResponse))
+  core.setOutput("processDiffsAiAnalysis", JSON.stringify(arrayDiffResponse))
 }
 
 export async function run(): Promise<void> {
