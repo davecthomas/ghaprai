@@ -33,7 +33,11 @@ jobs:
         run: |
           echo 'Diffs for the changed files:' 
           echo '${{ steps.log_pr_details.outputs.encodedDiffs }}' | base64 --decode
-      - name: Evaluation of code changes with OpenAI model ${{secrets.OPENAI_MODEL}}
+      - name: Evaluation of code changes (using OpenAI model ${{secrets.OPENAI_MODEL}})
         run: |
           echo 'Running the AI on the changed files:' 
-          echo '${{ steps.log_pr_details.outputs.openAiDiffResponse }}'
+          echo '${{ steps.log_pr_details.outputs.processDiffsAiDescription }}'
+      - name: Purpose of code changes (using OpenAI model ${{secrets.OPENAI_MODEL}})
+        run: |
+          echo 'Running the AI on the changed files:' 
+          echo '${{ steps.log_pr_details.outputs.processDiffsAiAnalysis }}'

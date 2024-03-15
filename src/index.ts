@@ -6,7 +6,8 @@ import OpenAI from "openai"
 const apiKey: string | undefined = process.env.OPENAI_API_KEY
 const openAiModel: string | undefined = process.env.OPENAI_MODEL
 const defaultOpenAiModel: string = "gpt-4-turbo-preview"
-const maxTokens: number = 200 // Max tokens for OpenAI completions. Making this huge is both expensive and unnecessary.
+const maxTokensDescribe: number = 200 // Max tokens for OpenAI diff descriptions. Making this huge is both expensive and unnecessary.
+const maxTokensAnalyze: number = 125 // Max tokens for OpenAI analysis. Should be brief!
 
 // Define types for the files obtained from GitHub API responses
 type GitHubFile =
@@ -79,9 +80,10 @@ async function listModels(openAiClient: OpenAI): Promise<string[]> {
   }
 }
 
-async function fetchOpenAIDescription(
+async function promptOpenAI(
   openai: OpenAI,
-  diff: string
+  prompt: string = "",
+  maxTokens: number = maxTokensDescribe
 ): Promise<string> {
   try {
     // const completion = await openai.completions.create({
@@ -96,7 +98,7 @@ async function fetchOpenAIDescription(
       messages: [
         {
           role: "system",
-          content: `In fewer than ${maxTokens}, describe the following code changes in this github diff between a base and head commit, limiting your insights to logic and string content changes only. Ignore formatting and white space changes.\n${diff}`,
+          content: prompt,
         },
       ],
       max_tokens: maxTokens,
@@ -118,10 +120,36 @@ async function fetchOpenAIDescription(
   }
 }
 
-async function processDiffsAndSetOutput(openAiClient: OpenAI, diffs: string[]) {
-  let promises = diffs.map((diff) => fetchOpenAIDescription(openAiClient, diff))
+// Fetch description from OpenAI for each diff and set the output based on the function name
+async function processDiffsAiDescription(
+  openAiClient: OpenAI,
+  diffs: string[]
+) {
+  let promises = diffs.map((diff) =>
+    promptOpenAI(
+      openAiClient,
+      `In fewer than ${maxTokensDescribe}, describe the following code changes in this github diff between a base and head commit, limiting your insights to logic and string content changes only. Ignore formatting and white space changes.\n${diff}`,
+      maxTokensDescribe
+    )
+  )
   let arrayDiffResponse = await Promise.all(promises)
-  core.setOutput("openAiDiffResponse", JSON.stringify(arrayDiffResponse))
+  core.setOutput(
+    processDiffsAiDescription.name,
+    JSON.stringify(arrayDiffResponse)
+  )
+}
+
+// Fetch analysis from OpenAI for each diff and set the output based on the function name
+async function processDiffsAiAnalysis(openAiClient: OpenAI, diffs: string[]) {
+  let promises = diffs.map((diff) =>
+    promptOpenAI(
+      openAiClient,
+      `In fewer than ${maxTokensAnalyze}, Describe the rationale or underlying intent the developer had in making this change. What were they trying to accomplish in the broader perspective?\n${diff}`,
+      maxTokensAnalyze
+    )
+  )
+  let arrayDiffResponse = await Promise.all(promises)
+  core.setOutput(processDiffsAiAnalysis.name, JSON.stringify(arrayDiffResponse))
 }
 
 export async function run(): Promise<void> {
@@ -203,7 +231,8 @@ export async function run(): Promise<void> {
     })
     // const models = await listModels(openAiClient)
     // core.setOutput("openAiModels", JSON.stringify(models))
-    await processDiffsAndSetOutput(openAiClient, diffs) // For each diff, fetch a description from OpenAI and set the output
+    await processDiffsAiDescription(openAiClient, diffs) // For each diff, fetch a description from OpenAI and set the output
+    await processDiffsAiAnalysis(openAiClient, diffs) // For each diff, fetch analysis from OpenAI and set the output
 
     // console.log(diffsJoined)
   } catch (error) {
