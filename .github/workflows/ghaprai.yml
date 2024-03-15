@@ -23,8 +23,8 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Count Files
-        run: echo 'Number of files changed:' ${{ steps.log_pr_details.outputs.countFiles }}
+      # - name: Count Files
+      #   run: echo 'Number of files changed:' ${{ steps.log_pr_details.outputs.countFiles }}
 
       - name: List Files
         run: echo 'Files changed:' ${{ steps.log_pr_details.outputs.filesList }}
@@ -33,11 +33,11 @@ jobs:
         run: |
           echo 'Diffs for the changed files:' 
           echo '${{ steps.log_pr_details.outputs.encodedDiffs }}' | base64 --decode
-      - name: Evaluation of code changes (using OpenAI model ${{secrets.OPENAI_MODEL}})
+      - name: Evaluation of code changes (using OpenAI)
         run: |
           echo 'Running the AI on the changed files:' 
           echo '${{ steps.log_pr_details.outputs.processDiffsAiDescription }}'
-      - name: Purpose of code changes (using OpenAI model ${{secrets.OPENAI_MODEL}})
+      - name: Purpose of code changes (using OpenAI)
         run: |
           echo 'Running the AI on the changed files:' 
           echo '${{ steps.log_pr_details.outputs.processDiffsAiAnalysis }}'

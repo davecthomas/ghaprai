@@ -47,10 +47,6 @@ async function getDiffForFile(
     console.error("Error fetching commit diff:", error)
     return `Failed to fetch diffs for ${filename}`
   }
-
-  //   console.log(`Comparing commits: base ${base}, head ${head}`)
-  //   console.log(`Total files changed: ${commitDiff.files?.length}`)
-
   const fileDiff = commitDiff.files?.find((file) => file.filename === filename)
 
   if (fileDiff && fileDiff.patch) {
@@ -109,7 +105,7 @@ async function promptOpenAI(
       completion.choices[0].message.content
     ) {
       const assistantMessage: string = completion.choices[0].message.content
-      console.log("OpenAI response:", assistantMessage)
+      //   console.log("OpenAI response:", assistantMessage)
       return assistantMessage.trim()
     } else {
       return "No explanation was provided."
@@ -141,6 +137,7 @@ async function processDiffsAiDescription(
 
 // Fetch analysis from OpenAI for each diff and set the output based on the function name
 async function processDiffsAiAnalysis(openAiClient: OpenAI, diffs: string[]) {
+  console.log(`testing ${processDiffsAiAnalysis.name}`)
   let promises = diffs.map((diff) =>
     promptOpenAI(
       openAiClient,
@@ -233,8 +230,6 @@ export async function run(): Promise<void> {
     // core.setOutput("openAiModels", JSON.stringify(models))
     await processDiffsAiDescription(openAiClient, diffs) // For each diff, fetch a description from OpenAI and set the output
     await processDiffsAiAnalysis(openAiClient, diffs) // For each diff, fetch analysis from OpenAI and set the output
-
-    // console.log(diffsJoined)
   } catch (error) {
     core.setFailed(`Action failed with error: ${error}`)
   }
