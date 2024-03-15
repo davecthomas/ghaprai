@@ -9,6 +9,11 @@ const defaultOpenAiModel: string = "gpt-4-turbo-preview"
 const maxTokensDescribe: number = 200 // Max tokens for OpenAI diff descriptions. Making this huge is both expensive and unnecessary.
 const maxTokensAnalyze: number = 125 // Max tokens for OpenAI analysis. Should be brief!
 
+// GHA output strings have problems with newlines and quotes, so we encode them to base64
+function base64Encode(data: string): string {
+  return Buffer.from(data).toString("base64")
+}
+
 // Define types for the files obtained from GitHub API responses
 type GitHubFile =
   Endpoints["GET /repos/{owner}/{repo}/pulls/{pull_number}/files"]["response"]["data"][number]
@@ -59,6 +64,7 @@ async function getDiffForFile(
   }
 }
 
+// List available models from OpenAI - not used in the action
 async function listModels(openAiClient: OpenAI): Promise<string[]> {
   try {
     const response = await openAiClient.models.list()
@@ -82,13 +88,6 @@ async function promptOpenAI(
   maxTokens: number = maxTokensDescribe
 ): Promise<string> {
   try {
-    // const completion = await openai.completions.create({
-    //   model: "gpt-4-turbo-preview", // Adjust the model as needed
-    //   prompt: `Describe the following code changes in this github diff between a base and head commit:\n${diff}`,
-    //   temperature: 0.7,
-    //   max_tokens: 200,
-    //   n: 1, // Number of completions to generate
-    // })
     const completion = await openai.chat.completions.create({
       model: openAiModel ? openAiModel : defaultOpenAiModel,
       messages: [
@@ -117,6 +116,7 @@ async function promptOpenAI(
 }
 
 // Fetch description from OpenAI for each diff and set the output based on the function name
+// We have to encode the output to base64 because GHA outputs have problems with newlines and quotes
 async function processDiffsAiDescription(
   openAiClient: OpenAI,
   diffs: string[]
@@ -129,7 +129,10 @@ async function processDiffsAiDescription(
     )
   )
   let arrayDiffResponse = await Promise.all(promises)
-  core.setOutput("processDiffsAiDescription", JSON.stringify(arrayDiffResponse))
+  core.setOutput(
+    "processDiffsAiDescription",
+    base64Encode(JSON.stringify(arrayDiffResponse))
+  )
 }
 
 // Fetch analysis from OpenAI for each diff and set the output based on the function name
@@ -142,7 +145,10 @@ async function processDiffsAiAnalysis(openAiClient: OpenAI, diffs: string[]) {
     )
   )
   let arrayDiffResponse = await Promise.all(promises)
-  core.setOutput("processDiffsAiAnalysis", JSON.stringify(arrayDiffResponse))
+  core.setOutput(
+    "processDiffsAiAnalysis",
+    base64Encode(JSON.stringify(arrayDiffResponse))
+  )
 }
 
 export async function run(): Promise<void> {

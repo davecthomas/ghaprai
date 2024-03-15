@@ -36,8 +36,8 @@ jobs:
       - name: Evaluation of code changes (using OpenAI)
         run: |
           echo 'Running the AI on the changed files:' 
-          echo '${{ steps.log_pr_details.outputs.processDiffsAiDescription }}'
+          echo '${{ steps.log_pr_details.outputs.processDiffsAiDescription }}' | base64 --decode
       - name: Purpose of code changes (using OpenAI)
         run: |
           echo 'Running the AI on the changed files:' 
-          echo '${{ steps.log_pr_details.outputs.processDiffsAiAnalysis }}'
+          echo '${{ steps.log_pr_details.outputs.processDiffsAiAnalysis }}' | base64 --decode
