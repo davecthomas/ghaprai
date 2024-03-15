@@ -44,4 +44,4 @@ jobs:
       - name: Potential problems with the code changes (using OpenAI)
         run: |
           echo 'Running AI on the diffs:' 
-          echo '${{ steps.log_pr_details.outputs.processDiffsAiAnalysis }}' | base64 --decode
+          echo '${{ steps.log_pr_details.outputs.processDiffsAiCodeSmell }}' | base64 --decode
