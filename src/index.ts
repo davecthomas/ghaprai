@@ -155,6 +155,23 @@ async function processDiffsAiAnalysis(openAiClient: OpenAI, diffs: string[]) {
   )
 }
 
+// Fetch analysis from OpenAI for each diff and set the output based on the function name
+async function processDiffsAiCodeSmell(openAiClient: OpenAI, diffs: string[]) {
+  let promises = diffs.map((diff) =>
+    promptOpenAI(
+      openAiClient,
+      `In 5 brief bullets or less, List potential code smells, security issues, maintenance issues, or potential bugs.\n${diff}`,
+      maxTokensAnalyze,
+      0.7 // Moderate temperature to make the response more coherent and technical, rather than creative.
+    )
+  )
+  let arrayDiffResponse = await Promise.all(promises)
+  core.setOutput(
+    "processDiffsAiCodeSmell",
+    base64Encode(JSON.stringify(arrayDiffResponse))
+  )
+}
+
 export async function run(): Promise<void> {
   try {
     const token: string = core.getInput("GITHUB_TOKEN", { required: true })
@@ -232,10 +249,10 @@ export async function run(): Promise<void> {
     const openAiClient = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
     })
-    // const models = await listModels(openAiClient)
-    // core.setOutput("openAiModels", JSON.stringify(models))
+
     await processDiffsAiDescription(openAiClient, diffs) // For each diff, fetch a description from OpenAI and set the output
     await processDiffsAiAnalysis(openAiClient, diffs) // For each diff, fetch analysis from OpenAI and set the output
+    await processDiffsAiCodeSmell(openAiClient, diffs) // For each diff, look for code smells and set the output
   } catch (error) {
     core.setFailed(`Action failed with error: ${error}`)
   }

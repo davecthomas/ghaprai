@@ -2,6 +2,10 @@
 
 This GitHub Action (GHA) leverages OpenAI to provide explanations for code changes in your pull requests or commits. It uses OpenAI's powerful models to generate human-like interpretations of the differences, helping to streamline code reviews and improve understanding of code changes.
 
+### Author
+
+[Dave Thomas](https://github.com/davecthomas)
+
 ## Prerequisites
 
 - An OpenAI account with API access. You can sign up and obtain an API key at [OpenAI](https://openai.com/).
