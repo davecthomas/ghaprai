@@ -85,7 +85,8 @@ async function listModels(openAiClient: OpenAI): Promise<string[]> {
 async function promptOpenAI(
   openai: OpenAI,
   prompt: string = "",
-  maxTokens: number = maxTokensDescribe
+  maxTokens: number = maxTokensDescribe,
+  temperature: number = 0.5
 ): Promise<string> {
   try {
     const completion = await openai.chat.completions.create({
@@ -97,6 +98,7 @@ async function promptOpenAI(
         },
       ],
       max_tokens: maxTokens,
+      temperature: temperature,
     })
     if (
       completion.choices &&
@@ -124,8 +126,9 @@ async function processDiffsAiDescription(
   let promises = diffs.map((diff) =>
     promptOpenAI(
       openAiClient,
-      `In fewer than ${maxTokensDescribe}, describe the following code changes in this github diff between a base and head commit, limiting your insights to logic and string content changes only. Ignore formatting and white space changes.\n${diff}`,
-      maxTokensDescribe
+      `In 5 sentences or less, describe the following code changes in this github diff between a base and head commit, limiting your insights to logic and string content changes only. Ignore formatting and white space changes.\n${diff}`,
+      maxTokensDescribe,
+      0.5 // Lower temperature to make the response more coherent and technical, rather than creative.
     )
   )
   let arrayDiffResponse = await Promise.all(promises)
@@ -140,8 +143,9 @@ async function processDiffsAiAnalysis(openAiClient: OpenAI, diffs: string[]) {
   let promises = diffs.map((diff) =>
     promptOpenAI(
       openAiClient,
-      `In fewer than ${maxTokensAnalyze}, Describe the rationale or underlying intent the developer had in making this change. What were they trying to accomplish in the broader perspective?\n${diff}`,
-      maxTokensAnalyze
+      `In 3 sentences or less, describe the rationale or underlying intent the developer had in making this change. What were they trying to accomplish in the broader perspective?\n${diff}`,
+      maxTokensAnalyze,
+      1.0 // Higher temperature to make the response more creative and less technical, as we're asking for the developer's intent.
     )
   )
   let arrayDiffResponse = await Promise.all(promises)
