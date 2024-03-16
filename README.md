@@ -77,6 +77,10 @@ This GitHub Action (GHA) leverages OpenAI to provide explanations for code chang
 - The GitHub API token is used to securely interact with GitHub's API to fetch code diffs.
 - The OpenAI API key is required to access OpenAI's API for generating code analyses.
 
+### Build
+
+`npm run build`
+
 ## Contributing - not yet
 
 Contributions to this GitHub Action will be welcome once I get the basic V1 features built! In the meantime, please feel free to open issues.

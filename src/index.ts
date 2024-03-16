@@ -2,6 +2,7 @@ import * as core from "@actions/core"
 import { context, getOctokit } from "@actions/github"
 import { Endpoints } from "@octokit/types"
 import OpenAI from "openai"
+import prompts from "./resources/prompts.json"
 
 const apiKey: string | undefined = process.env.OPENAI_API_KEY
 
@@ -180,6 +181,9 @@ export class ghapraiOpenAI {
   private chatCompletionMoreCreativity: number = 1.1 // Higher temperature to make the response more creative and less technical, as we're asking for the developer's intent.
   private maxTokensDescribe: number = 200 // Max tokens for OpenAI diff descriptions. Making this huge is both expensive and unnecessary.
   private maxTokensAnalyze: number = 125 // Max tokens for OpenAI analysis. Should be brief!
+  private promptDescriptions: string = prompts.prompts.promptDescriptions
+  private promptAnalysis: string = prompts.prompts.promptAnalysis
+  private promptCodeSmell: string = prompts.prompts.promptCodeSmell
 
   constructor(apiKey: string | undefined, openAiModel: string | undefined) {
     this.openAiClient = new OpenAI({
@@ -226,7 +230,7 @@ export class ghapraiOpenAI {
   async processDiffsAiDescription(diffs: string[]) {
     let promises = diffs.map((diff) =>
       this.promptOpenAI(
-        `In 5 sentences or less, describe the following code changes in this github diff between a base and head commit, limiting your insights to logic and string content changes only. Ignore formatting, strings, and white space changes.\n${diff}`,
+        this.promptDescriptions,
         this.maxTokensDescribe,
         this.chatCompletionCoherentTechnical // Lower temperature to make the response more coherent and technical, rather than creative.
       )
@@ -241,7 +245,7 @@ export class ghapraiOpenAI {
   async processDiffsAiAnalysis(diffs: string[]) {
     let promises = diffs.map((diff) =>
       this.promptOpenAI(
-        `In 3 sentences or less, describe the rationale or underlying intent the developer had in making this change. What were they trying to accomplish in the broader perspective?\n${diff}`,
+        this.promptAnalysis,
         this.maxTokensAnalyze,
         this.chatCompletionMoreCreativity // Higher temperature to make the response more creative and less technical, as we're asking for the developer's intent.
       )
@@ -257,7 +261,7 @@ export class ghapraiOpenAI {
   async processDiffsAiCodeSmell(diffs: string[]) {
     let promises = diffs.map((diff) =>
       this.promptOpenAI(
-        `In 4 brief bullets or less, List potential code smells, security issues, maintenance issues, or potential bugs.\n${diff}`,
+        this.promptCodeSmell,
         this.maxTokensAnalyze,
         this.chatCompletionTechCreativeBalance // Moderate temperature to make the response more coherent and technical, rather than creative.
       )
