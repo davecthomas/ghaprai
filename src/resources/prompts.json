@@ -2,7 +2,7 @@
     "prompts": {
       "promptDescriptions": "In 5 sentences or less, describe the following code changes in this GitHub diff between a base and head commit, limiting your insights to logic and string content changes only. Ignore formatting and white space changes.\n",
       "promptAnalysis": "In 3 sentences or less, describe the rationale or underlying intent the developer had in making this change. What were they trying to accomplish in the broader perspective?\n",
-      "promptCodeSmell": "In 5 brief bullets or less, list potential code smells, security issues, maintenance issues, or potential bugs.\n"
+      "promptCodeSmell": "Referencing the diffs, list potential code smells, security issues, or potential bugs. Limit analysis to 4 bullets or less.\n"
     }
 }
   
