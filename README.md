@@ -79,6 +79,7 @@ This GitHub Action (GHA) leverages OpenAI to provide explanations for code chang
 
 ### Build
 
+`npm install`
 `npm run build`
 
 ## Contributing - not yet
