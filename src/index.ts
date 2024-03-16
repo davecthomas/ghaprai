@@ -1,6 +1,9 @@
-const apiKey: string | undefined = process.env.OPENAI_API_KEY
+import * as core from "@actions/core"
+import { context } from "@actions/github"
 import { ghapraiGithub } from "./ghaprai-github"
 import { ghapraiOpenAI } from "./ghaprai-openai"
+
+const apiKey: string | undefined = process.env.OPENAI_API_KEY
 
 export class githubActionPrAi {
   private github: ghapraiGithub
