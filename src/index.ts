@@ -230,7 +230,7 @@ export class ghapraiOpenAI {
   async processDiffsAiDescription(diffs: string[]) {
     let promises = diffs.map((diff) =>
       this.promptOpenAI(
-        this.promptDescriptions,
+        this.promptDescriptions + diff,
         this.maxTokensDescribe,
         this.chatCompletionCoherentTechnical // Lower temperature to make the response more coherent and technical, rather than creative.
       )
@@ -245,7 +245,7 @@ export class ghapraiOpenAI {
   async processDiffsAiAnalysis(diffs: string[]) {
     let promises = diffs.map((diff) =>
       this.promptOpenAI(
-        this.promptAnalysis,
+        this.promptAnalysis + diff,
         this.maxTokensAnalyze,
         this.chatCompletionMoreCreativity // Higher temperature to make the response more creative and less technical, as we're asking for the developer's intent.
       )
@@ -261,7 +261,7 @@ export class ghapraiOpenAI {
   async processDiffsAiCodeSmell(diffs: string[]) {
     let promises = diffs.map((diff) =>
       this.promptOpenAI(
-        this.promptCodeSmell,
+        this.promptCodeSmell + diff,
         this.maxTokensAnalyze,
         this.chatCompletionTechCreativeBalance // Moderate temperature to make the response more coherent and technical, rather than creative.
       )
